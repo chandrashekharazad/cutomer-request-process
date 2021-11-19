@@ -18,14 +18,4 @@ namespace cutomer_request_process
         public int  userid { get; set; }
     }
 
-    public class CustomerRequestContext : DbContext
-    {
-        public CustomerRequestContext(DbContextOptions<CustomerRequestContext> options)
-            : base(options)
-        { }
-
-        public DbSet<CustomerRequestEf> t_account { get; set; }
-
-    }
-
 }

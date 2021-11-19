@@ -9,10 +9,12 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
+using cutomer_request_process.DataAccessLayer;
+using cutomer_request_process.Interfaces;
 
 namespace cutomer_request_process
 {
-    public  class HttpTrigger
+    public  class HttpTrigger : IHttpTrigger
     {
 
         private readonly CustomerRequestContext _context;
