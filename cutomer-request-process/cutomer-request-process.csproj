@@ -5,10 +5,12 @@
     <RootNamespace>cutomer_request_process</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.15.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.21" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
+    <PackageReference Include="SparkPost" Version="1.14.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

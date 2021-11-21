@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using cutomer_request_process.DataAccessLayer;
 using cutomer_request_process.Interfaces;
+using cutomer_request_process.BusinessLogic;
 
 namespace cutomer_request_process
 {
@@ -52,6 +53,11 @@ namespace cutomer_request_process
             };
             var entity = await _context.t_account.AddAsync(p, cts);
             await _context.SaveChangesAsync(cts);
+
+            INotifyObserver obj1 = new MailNotify();
+            Notifier O = new Notifier();
+            O.AddService(obj1);
+            O.ExecuteNotifier();
 
             //EmailService obj_email = new  EmailService();
 
