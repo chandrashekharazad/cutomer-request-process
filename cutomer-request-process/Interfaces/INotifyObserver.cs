@@ -6,6 +6,6 @@ namespace cutomer_request_process.Interfaces
 {
     interface INotifyObserver
     {
-        void Notify();
+        void Notify(string user_mail);
     }
 }

@@ -5,12 +5,12 @@ namespace cutomer_request_process
 {
     class EmailService
     {
-        public static void PushNotification()
+        public static void PushNotification(string user_mail)
         {
             using (MailMessage mail = new MailMessage())
             {
                 mail.From = new MailAddress("cs5721cdnproject@gmail.com");
-                mail.To.Add("cs5721cdnproject@gmail.com");
+                mail.To.Add(user_mail);
                 mail.Subject = "Hello from SparkPost!";
                 mail.Body = "This is a test email.";
                 mail.IsBodyHtml = true;
@@ -22,6 +22,6 @@ namespace cutomer_request_process
                     smtp.Send(mail);
                 }
             }
-            }
+        }
     }
 }

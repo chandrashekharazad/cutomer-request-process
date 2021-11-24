@@ -25,12 +25,12 @@ namespace cutomer_request_process.BusinessLogic
         {
             ALNotify.Remove(obj);
         }
-        public void ExecuteNotifier()
+        public void ExecuteNotifier(string user_mail)
         {
             foreach (INotifyObserver O in ALNotify)
             {
-                //Call all notification System  
-                O.Notify();
+                //Call  notification System  
+                O.Notify(user_mail);
             }
         }
     }

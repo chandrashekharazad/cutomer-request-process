@@ -12,6 +12,7 @@ using System.Threading;
 using cutomer_request_process.DataAccessLayer;
 using cutomer_request_process.Interfaces;
 using cutomer_request_process.BusinessLogic;
+using cutomer_request_process.Models;
 
 namespace cutomer_request_process
 {
@@ -25,59 +26,51 @@ namespace cutomer_request_process
         }
 
         [FunctionName("HttpTrigger")]
-        public  async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, CancellationToken cts,
             ILogger log)
         {
+            string user_mail;
+
+            string responseMessage = "";
+
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             CustomerRequestEf data = JsonConvert.DeserializeObject<CustomerRequestEf>(requestBody);
 
-            var _userid = data.userid;
-
-            if (await _context.t_account.AnyAsync(o => o.userid == _userid))
+            if (await _context.t_account.AnyAsync(o => o.userid == data.userid))
             {
-                string responseMessage = "The user already has an account";
+                responseMessage = "The user already has an account";
                 return new OkObjectResult(responseMessage);
             }
 
-            CustomerRequestEf p = new CustomerRequestEf
-            {
-                account_number = data.account_number,
+            UserDetails _userDetails = await _context.t_userdata.FirstOrDefaultAsync(o => o.userid == data.userid);
+            user_mail = _userDetails.email_id;
+
+            CustomerRequestEf p = new CustomerRequestEf {
+                account_number = DateTimeOffset.Now.ToUnixTimeSeconds().ToString(),
                 account_type = data.account_type,
                 balance = data.balance,
                 account_status = data.account_status,
                 userid = data.userid
             };
+
             var entity = await _context.t_account.AddAsync(p, cts);
             await _context.SaveChangesAsync(cts);
 
             INotifyObserver obj1 = new MailNotify();
             Notifier O = new Notifier();
             O.AddService(obj1);
-            O.ExecuteNotifier();
+            O.ExecuteNotifier(user_mail);
 
-            //EmailService obj_email = new  EmailService();
+            responseMessage = "The account is Activated";
 
-            //obj_email.
+            //return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
 
-            //EmailService.PushNotification();
+            return new OkObjectResult(responseMessage);
 
-            return new OkObjectResult(JsonConvert.SerializeObject(entity.Entity));
-
-            //string name = req.Query["name"];
-
-            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            //dynamic data = JsonConvert.DeserializeObject(requestBody);
-            //name = name ?? data?.name;
-
-            //string responseMessage = string.IsNullOrEmpty(name)
-            //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-            //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            //return new OkObjectResult(responseMessage);
         }
     }
 }

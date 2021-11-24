@@ -7,10 +7,10 @@ namespace cutomer_request_process.BusinessLogic
 {
     class MailNotify : INotifyObserver
     {
-        public void Notify()
+        public void Notify(string user_mail)
         {
-            EmailService.PushNotification();
-            //Console.WriteLine("Notify through Mail");
+
+            EmailService.PushNotification(user_mail);
         }
     }
 }
