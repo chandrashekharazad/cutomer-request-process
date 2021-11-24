@@ -30,7 +30,6 @@ namespace cutomer_request_process
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req, CancellationToken cts,
             ILogger log)
         {
-            string user_mail;
 
             string responseMessage = "";
 
@@ -40,20 +39,33 @@ namespace cutomer_request_process
 
             CustomerRequestEf data = JsonConvert.DeserializeObject<CustomerRequestEf>(requestBody);
 
-            if (await _context.t_account.AnyAsync(o => o.userid == data.userid))
+            if (await _context.t_account.AnyAsync(o => o.userid == data.userid && o.account_status == "Active"))
             {
-                responseMessage = "The user already has an account";
+                responseMessage = "The user already has an active account";
+                return new OkObjectResult(responseMessage);
+            }
+            else if(await _context.t_account.AnyAsync(o => o.userid == data.userid && o.account_status != "Active"))
+            {
+                CustomerRequestEf _account_details = await _context.t_account.FirstOrDefaultAsync(o => o.userid == data.userid);
+                responseMessage = "User already had an account in " + _account_details.account_status+" state and it is now activated";
+                _account_details.account_status = "Active";
+                _context.SaveChanges();
                 return new OkObjectResult(responseMessage);
             }
 
             UserDetails _userDetails = await _context.t_userdata.FirstOrDefaultAsync(o => o.userid == data.userid);
-            user_mail = _userDetails.email_id;
+            var _account_type = 0;
+
+            if (_userDetails.user_type == "Student")
+            {
+                _account_type = 1;
+            }
 
             CustomerRequestEf p = new CustomerRequestEf {
                 account_number = DateTimeOffset.Now.ToUnixTimeSeconds().ToString(),
-                account_type = data.account_type,
-                balance = data.balance,
-                account_status = data.account_status,
+                account_type = _account_type,
+                balance = 0,
+                account_status = "Active",
                 userid = data.userid
             };
 
@@ -63,7 +75,7 @@ namespace cutomer_request_process
             INotifyObserver obj1 = new MailNotify();
             Notifier O = new Notifier();
             O.AddService(obj1);
-            O.ExecuteNotifier(user_mail);
+            O.ExecuteNotifier(_userDetails.email_id);
 
             responseMessage = "The account is Activated";
 
