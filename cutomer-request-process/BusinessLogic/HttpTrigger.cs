@@ -16,13 +16,26 @@ using cutomer_request_process.Models;
 
 namespace cutomer_request_process
 {
-    public  class HttpTrigger : IHttpTrigger
+    public  class HttpTrigger : IHttpTrigger, INotifyObserver
     {
 
         private readonly CustomerRequestContext _context;
-        public HttpTrigger(CustomerRequestContext context)
+
+        private readonly INotifyObserver _mailNotify;
+
+
+        public HttpTrigger(CustomerRequestContext context, INotifyObserver mailNotify)
         {
             _context = context;
+            _mailNotify = mailNotify;
+
+        }
+
+        public void Notify(string user_mail)
+        {
+            Notifier O = new Notifier();
+            O.AddService(_mailNotify);
+            O.ExecuteNotifier(user_mail);
         }
 
         [FunctionName("HttpTrigger")]
@@ -72,10 +85,12 @@ namespace cutomer_request_process
             var entity = await _context.t_account.AddAsync(p, cts);
             await _context.SaveChangesAsync(cts);
 
-            INotifyObserver obj1 = new MailNotify();
-            Notifier O = new Notifier();
-            O.AddService(obj1);
-            O.ExecuteNotifier(_userDetails.email_id);
+
+            Notify(_userDetails.email_id);
+            //INotifyObserver obj1 = new MailNotify();
+            //Notifier O = new Notifier();
+            //O.AddService(obj1);
+            //O.ExecuteNotifier(_userDetails.email_id);
 
             responseMessage = "The account is Activated";
 

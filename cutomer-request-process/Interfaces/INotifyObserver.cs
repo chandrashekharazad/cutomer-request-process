@@ -4,7 +4,7 @@ using System.Text;
 
 namespace cutomer_request_process.Interfaces
 {
-    interface INotifyObserver
+    public interface INotifyObserver
     {
         void Notify(string user_mail);
     }
