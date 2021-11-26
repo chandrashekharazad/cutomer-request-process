@@ -1,8 +1,5 @@
 ﻿using cutomer_request_process.Interfaces;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace cutomer_request_process.BusinessLogic
 {
@@ -25,12 +22,12 @@ namespace cutomer_request_process.BusinessLogic
         {
             ALNotify.Remove(obj);
         }
-        public void ExecuteNotifier(string user_mail)
+        public void ExecuteNotifier(string user_mail, string account_number, int balance, string _case)
         {
             foreach (INotifyObserver O in ALNotify)
             {
                 //Call  notification System  
-                O.Notify(user_mail);
+                O.Notify(user_mail, account_number, balance, _case);
             }
         }
     }
