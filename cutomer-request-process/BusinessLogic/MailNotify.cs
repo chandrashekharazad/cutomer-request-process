@@ -1,16 +1,13 @@
 ﻿using cutomer_request_process.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace cutomer_request_process.BusinessLogic
 {
-    class MailNotify : INotifyObserver
+    public class MailNotify : INotifyObserver
     {
-        public void Notify(string user_mail)
+        public void Notify(string user_mail, string account_number, int balance, string _case)
         {
 
-            EmailService.PushNotification(user_mail);
+            EmailService.PushNotification(user_mail, account_number, balance, _case);
         }
     }
 }

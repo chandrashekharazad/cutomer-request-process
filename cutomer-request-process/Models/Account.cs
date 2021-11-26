@@ -6,7 +6,7 @@ using System.Text;
 
 namespace cutomer_request_process
 {
-    public class CustomerRequestEf
+    public class Account
     {
         [Key]
         public Guid account_id { get; set; } = Guid.NewGuid();

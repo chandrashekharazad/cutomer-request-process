@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace cutomer_request_process.Interfaces
+﻿namespace cutomer_request_process.Interfaces
 {
-    interface INotifyObserver
+    public interface INotifyObserver
     {
-        void Notify(string user_mail);
+        void Notify(string user_mail, string account_number, int balance, string _case);
     }
 }
